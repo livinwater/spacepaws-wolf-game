@@ -1,0 +1,32 @@
+{
+  "tweets": [
+    {
+      "id": 1,
+      "author": {
+        "handle": "@klarnaseb",
+        "name": "Sebastian Siemiatkowski",
+        "title": "Co-founder and CEO of @Klarna"
+      },
+      "content": "Ok. I give up. Klarna and me will embrace crypto! More to come\n\nYes I know! This post will get a huge sigh and 2 views 😂\n\nBut it still feels historic. Last large fintech in the world to embrace it. Someone had to be last. And that's a milestone as well of some sort… 🥳",
+      "context": "This announcement marks a significant shift as Klarna was one of the last major fintech companies to resist crypto adoption. The company has previously been skeptical of cryptocurrencies."
+    },
+    {
+      "id": 2,
+      "author": {
+        "handle": "@bigdsenpai",
+        "name": "Big D"
+      },
+      "content": "If you told me in 2021 that being generous to IRL friends/family/employees etc. would be my single biggest regret in life by 2025, I'd never have believed it. But sadly the warm proud feelings you get from helping everyone out are nothing compared to the cold lonely jaded feelings you've got coming for you eventually.\n\nOnce you eventually put your foot down and start saying \"no\" to the people who got used to you giving them \"yes yes yes\", have fun being treated like you're Ted Bundy. Pic related.\n\nListen to Mayne guys. TRUST me.",
+      "context": "Post discussing personal experiences with wealth management and relationships during the crypto bull market. High engagement with similar stories from other community members."
+    },
+    {
+      "id": 3,
+      "author": {
+        "handle": "@CryptoDonAlt",
+        "name": "DonAlt"
+      },
+      "content": "What people on here don't realize is that there are real losers behind the grifts and scams that are run on here\n\nSome random schmuck with $100 to invest getting rinsed by Dave Portnoy for all he has\nA dude trusting Ansem with his last $500 because he portrays himself as genuine\nA Trump fan yeeting his savings into Trump coin to make it\n\nAll I hear on here is \"Yeah but there were winners like XYZ\" brother... these memes are zero sum, the winners took (or will take) from the losers\nIt's a fucked sort of hunger games and the influencers on here have machine guns while you've got dick all",
+      "context": "A critical commentary on the predatory nature of crypto influencers and meme coins. The thread gained significant traction, sparking discussions about responsibility in crypto promotion."
+    }
+  ]
+}
