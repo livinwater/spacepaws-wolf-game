@@ -11,7 +11,6 @@ const TIMER_DURATION = 30;
 export default function SentimentGame() {
   const [tweets, setTweets] = useState<Tweet[]>([]);
   const [currentTweetIndex, setCurrentTweetIndex] = useState(0);
-  const [showContext, setShowContext] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
   const [showTransition, setShowTransition] = useState(false);
@@ -76,7 +75,6 @@ export default function SentimentGame() {
     
     if (!isLastTweet) {
       setCurrentTweetIndex(prev => prev + 1);
-      setShowContext(false);
     }
   };
 
@@ -128,8 +126,6 @@ export default function SentimentGame() {
           <TweetCard
             tweet={currentTweet}
             onSwipe={handleSwipe}
-            showContext={showContext}
-            onContextToggle={() => setShowContext(!showContext)}
             disabled={selectedAnswers[currentTweet.id] !== undefined}
           />
         </div>

@@ -8,16 +8,12 @@ import { Tweet, SwipeDirection } from '@/types/tweet';
 interface TweetCardProps {
   tweet: Tweet;
   onSwipe: (direction: SwipeDirection) => void;
-  showContext: boolean;
-  onContextToggle: () => void;
   disabled?: boolean;
 }
 
 const TweetCard: React.FC<TweetCardProps> = ({ 
   tweet, 
-  onSwipe, 
-  showContext, 
-  onContextToggle,
+  onSwipe,
   disabled = false 
 }) => {
   const [swipeDirection, setSwipeDirection] = useState<SwipeDirection | null>(null);
@@ -94,22 +90,6 @@ const TweetCard: React.FC<TweetCardProps> = ({
         
         {/* Tweet Content */}
         <p className="text-lg text-[#5C4B3B] mb-4 whitespace-pre-wrap">{tweet.content}</p>
-        
-        {/* Context Button */}
-        <button
-          onClick={onContextToggle}
-          disabled={disabled}
-          className="text-sm text-[#6B5744]/70 hover:text-[#6B5744] mb-4 disabled:opacity-50"
-        >
-          👀 Check community signals
-        </button>
-        
-        {/* Context Information */}
-        {showContext && tweet.context && (
-          <div className="text-sm text-[#6B5744] bg-amber-50/50 p-3 rounded-lg mb-4">
-            {tweet.context}
-          </div>
-        )}
 
         {/* Swipe Instructions */}
         <div className="flex justify-between mt-4 text-sm">

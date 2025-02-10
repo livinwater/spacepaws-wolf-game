@@ -6,7 +6,6 @@ export interface Tweet {
     title?: string;
   };
   content: string;
-  context?: string;
 }
 
 export type SwipeDirection = 'left' | 'right';
