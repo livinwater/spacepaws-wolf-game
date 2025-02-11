@@ -1,42 +1,5 @@
 {
   "evaluations": [
-    {
-      "timestamp": "2025-02-11T11:35:58.532Z"
-    },
-    {
-      "timestamp": "2025-02-11T11:37:25.770Z"
-    },
-    {
-      "batchNumber": 0,
-      "results": [
-        {
-          "tweet": "A simple idea can unite people, and $CAR is proving that. This unique experiment puts the CAR in the spotlight while gaining traction in the crypto space. Now trading at $0.2490 on #BingX, it's worth watching how the market reacts.\n\n#Crypto #TradingView #Altcoin https://t.co/m89zXeoh36",
-          "userAnswer": "None",
-          "llmAnswer": "Bullish",
-          "correct": 0
-        },
-        {
-          "tweet": "Ok. I give up. Klarna and me will embrace crypto! More to come\n\nYes I know! This post will get a huge sigh and 2 views \n\nBut it still feels historic. Last large fintech in the world to embrace it. Someone had to be last. And that's a milestone as well of some sort… ",
-          "userAnswer": "None",
-          "llmAnswer": "Bullish",
-          "correct": 0
-        },
-        {
-          "tweet": "If you told me in 2021 that being generous to IRL friends/family/employees etc. would be my single biggest regret in life by 2025, I'd never have believed it. But sadly the warm proud feelings you get from helping everyone out are nothing compared to the cold lonely jaded feelings you've got coming for you eventually.\n\nOnce you eventually put your foot down and start saying \"no\" to the people who got used to you giving them \"yes yes yes\", have fun being treated like you're Ted Bundy. Pic related.\n\nListen to Mayne guys. TRUST me.",
-          "userAnswer": "None",
-          "llmAnswer": "Bullish",
-          "correct": 0
-        },
-        {
-          "tweet": "What people on here don't realize is that there are real losers behind the grifts and scams that are run on here\n\nSome random schmuck with $100 to invest getting rinsed by Dave Portnoy for all he has\nA dude trusting Ansem with his last $500 because he portrays himself as genuine\nA Trump fan yeeting his savings into Trump coin to make it\n\nAll I hear on here is \"Yeah but there were winners like XYZ\" brother... these memes are zero sum, the winners took (or will take) from the losers\nIt's a fucked sort of hunger games and the influencers on here have machine guns while you've got dick all",
-          "userAnswer": "None",
-          "llmAnswer": "Bearish",
-          "correct": 0
-        }
-      ],
-      "totalCorrect": 0,
-      "passed": false,
-      "timestamp": "2025-02-11T15:16:10.362Z"
-    }
+    
   ]
 }

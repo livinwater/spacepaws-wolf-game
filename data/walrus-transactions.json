@@ -1,54 +1,5 @@
 {
   "transactions": [
-    {
-      "timestamp": "2025-02-11T13:24:37.596Z",
-      "blobObject": {
-        "id": "0xf0879df84426bb60537f0bdd94f74beac8fc0baf5e79bc23ad29e57554aed345",
-        "registeredEpoch": 13,
-        "blobId": "cmAx_NYEahlyB00AEgFC5n4_BR3q3sxbZ8aCR4yPLPM",
-        "size": 93,
-        "encodingType": "RedStuff",
-        "certifiedEpoch": 13,
-        "storage": {
-          "id": "0xd1c87a340a0e45d1550c18c210f5eba783d8fc5e56a35b2dcd17118d36bb72c2",
-          "startEpoch": 13,
-          "endEpoch": 14,
-          "storageSize": 65023000
-        },
-        "deletable": false
-      },
-      "resourceOperation": {
-        "registerFromScratch": {
-          "encodedLength": 65023000,
-          "epochsAhead": 1
-        }
-      },
-      "cost": 132300
-    },
-    {
-      "timestamp": "2025-02-11T13:25:17.958Z",
-      "blobObject": {
-        "id": "0x3c8b892faf9396b629a9d0743367b6ffbb3c953dca95e24be7aec76822206e01",
-        "registeredEpoch": 13,
-        "blobId": "s-GD7bn8WcjRch5CGZ0NOvgn6c9riE9kWDOTZA8xgDA",
-        "size": 93,
-        "encodingType": "RedStuff",
-        "certifiedEpoch": 13,
-        "storage": {
-          "id": "0x4fe0add89f46a8f53c8ab4dd801533877c6cdd392f9bcae0e9e727ad7f495317",
-          "startEpoch": 13,
-          "endEpoch": 14,
-          "storageSize": 65023000
-        },
-        "deletable": false
-      },
-      "resourceOperation": {
-        "registerFromScratch": {
-          "encodedLength": 65023000,
-          "epochsAhead": 1
-        }
-      },
-      "cost": 132300
-    }
+  
   ]
 }
