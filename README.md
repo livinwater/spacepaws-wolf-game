@@ -14,6 +14,10 @@ Sui - Uploading of game states to Walrus, so that players can continue from the 
 
 
 
+https://github.com/user-attachments/assets/24a611f6-6fa4-41e7-b64f-21ce119b57a0
+
+
+
 ## Getting Started
 
 First, run the development server:
