@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useGameStore } from '@/lib/stores/game-store';
 import { type SwipeDirection } from '@/lib/types';
 import { HeartIcon } from '@heroicons/react/24/solid';
+import TypeWriter from '@/app/components/TypeWriter';
 
 export default function AdventureScene() {
   const { health, currentStage, position, actions } = useGameStore();
@@ -11,6 +12,7 @@ export default function AdventureScene() {
   const [touchEnd, setTouchEnd] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [prompt, setPrompt] = useState("");
+  const [showText, setShowText] = useState(false);
 
   // Fetch initial prompt
   useEffect(() => {
@@ -38,6 +40,15 @@ export default function AdventureScene() {
     
     fetchPrompt();
   }, []);
+
+  useEffect(() => {
+    // Start showing text after a brief delay
+    const timer = setTimeout(() => {
+      setShowText(true);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [prompt]);
 
   // Swipe handling
   const minSwipeDistance = 50;
@@ -146,9 +157,13 @@ export default function AdventureScene() {
 
         {/* Narrative Text */}
         <div className="text-center text-white mt-4">
-          <p className="text-lg mb-4 leading-relaxed">
-            {prompt}
-          </p>
+          {showText && (
+            <TypeWriter
+              text={prompt}
+              speed={100}
+              className="text-lg font-[var(--font-motley-forces)]"
+            />
+          )}
           <div className="flex justify-center gap-8">
             <div className="text-emerald-400">
               ← Twisted Forest

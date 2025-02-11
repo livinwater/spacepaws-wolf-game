@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import TypeWriter from './TypeWriter';
 
 interface GameTransitionProps {
   nextGame: string;
@@ -10,60 +11,32 @@ interface GameTransitionProps {
 
 export default function GameTransition({ nextGame, onComplete }: GameTransitionProps) {
   const router = useRouter();
-  const [wolfProgress, setWolfProgress] = useState(0);
+  const [phase, setPhase] = useState(1);
+
+  const transitionTexts = [
+    "The wolf stirs...",
+    "A choice approaches...",
+    "Prepare yourself..."
+  ];
 
   useEffect(() => {
-    const wolfTimer = setInterval(() => {
-      setWolfProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(wolfTimer);
-          setTimeout(() => {
-            router.push(nextGame);
-            onComplete?.();
-          }, 500);
-          return 100;
-        }
-        return prev + 2;
-      });
-    }, 50); // 2.5 seconds for wolf animation
-
-    return () => clearInterval(wolfTimer);
-  }, [router, nextGame, onComplete]);
+    if (phase > transitionTexts.length) {
+      router.push(nextGame);
+      if (onComplete) onComplete();
+    }
+  }, [phase, nextGame, router, onComplete]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      {/* Centered container */}
-      <div className="w-[600px] h-32 bg-[#1a1a1a] relative overflow-hidden rounded-lg border border-gray-700">
-        {/* Text that appears near the start */}
-        <div className="absolute left-8 top-1/2 -translate-y-1/2 text-white">
-          <h2 className="font-[var(--font-motley-forces)] text-2xl mb-1">
-            Time for an Adventure!
-          </h2>
-          <p className="font-[var(--font-motley-forces)] text-lg text-gray-400">
-            Make your choice wisely...
-          </p>
-        </div>
-
-        {/* Wolf that walks across */}
-        <div 
-          className="absolute top-1/2 -translate-y-1/2 transition-all duration-500 ease-linear"
-          style={{ 
-            left: `${70 + (wolfProgress * 0.15)}%`,
-            transform: `translate(-50%, -50%)`
+    <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">
+      <div className="text-center">
+        <TypeWriter
+          text={transitionTexts[phase - 1]}
+          speed={150}  
+          className="text-4xl text-white font-[var(--font-motley-forces)]"
+          onComplete={() => {
+            setTimeout(() => setPhase(prev => prev + 1), 2000);
           }}
-        >
-          <div className="w-24 h-24">
-            <video 
-              autoPlay 
-              loop 
-              muted 
-              playsInline
-              className="w-full h-full object-contain"
-            >
-              <source src="/videos/wolf.mp4" type="video/mp4" />
-            </video>
-          </div>
-        </div>
+        />
       </div>
     </div>
   );
