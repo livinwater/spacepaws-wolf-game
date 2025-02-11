@@ -5,12 +5,24 @@
       "startIndex": 0,
       "endIndex": 3,
       "answers": [
-        "None",
-        "None",
-        "None",
-        "None"
+        "Bullish",
+        "Bullish",
+        "Bullish",
+        "Bullish"
       ],
-      "timestamp": "2025-02-11T07:44:13.959Z"
+      "timestamp": "2025-02-11T09:38:45.989Z"
+    },
+    {
+      "batchNumber": 1,
+      "startIndex": 0,
+      "endIndex": 3,
+      "answers": [
+        "Bearish",
+        "Bearish",
+        "Bearish",
+        "Bearish"
+      ],
+      "timestamp": "2025-02-11T09:38:59.417Z"
     }
   ]
 }

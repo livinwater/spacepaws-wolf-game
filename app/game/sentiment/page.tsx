@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useGameStore } from '@/lib/game/state';
+import { useGameStore } from '@/lib/stores/game-store';
 import GameTransition from '@/app/components/GameTransition';
 import TweetCard from '@/components/TweetCard';
 import type { Tweet, SwipeDirection } from '@/types/tweet';
@@ -72,8 +72,11 @@ export default function SentimentGame() {
   // Check if we should show transition based on batch size
   useEffect(() => {
     if (currentBatch.length === TWEETS_PER_INTERVAL && !showTransition) {
-      const batchNumber = Math.floor((currentTweetIndex - 1) / TWEETS_PER_INTERVAL);
-      const startIndex = batchNumber * TWEETS_PER_INTERVAL;
+      // Get current number of batches from store
+      const existingBatches = useGameStore.getState().sentimentResults;
+      const batchNumber = existingBatches.length;
+      
+      const startIndex = currentTweetIndex - TWEETS_PER_INTERVAL;
       const results = {
         batchNumber,
         startIndex,
