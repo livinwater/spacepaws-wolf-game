@@ -29,8 +29,8 @@ export const useGameStore = create<GameState>((set) => ({
   currentStage: 'sentiment',
   currentLevel: 1,
   sentimentResults: [],
-  health: 100,
-  maxHealth: 100,
+  health: 3, // Start with 3 hearts
+  maxHealth: 3, // Max 3 hearts
   
   // Actions
   setCurrentStage: (stage) => set({ currentStage: stage }),
@@ -39,7 +39,7 @@ export const useGameStore = create<GameState>((set) => ({
     set((state) => ({
       sentimentResults: [...state.sentimentResults, results]
     })),
-  setHealth: (health) => set({ health: Math.min(health, 100) }),
+  setHealth: (health) => set({ health: Math.min(health, 3) }), // Cap at 3 hearts
   updateHealth: (delta) => 
     set((state) => ({
       health: Math.min(Math.max(state.health + delta, 0), state.maxHealth)

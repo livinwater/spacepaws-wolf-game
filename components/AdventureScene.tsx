@@ -1,18 +1,24 @@
-"use client";
-import { useEffect, useState } from 'react';
+'use client';
+
+import { useEffect, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { useGameStore } from '@/lib/stores/game-store';
 import { type SwipeDirection } from '@/lib/types';
 import { HeartIcon } from '@heroicons/react/24/solid';
 import TypeWriter from './TypeWriter';
 
 export default function AdventureScene() {
-  const { health, currentStage, position, actions } = useGameStore();
+  const router = useRouter();
+  const { health, updateHealth, setCurrentStage } = useGameStore();
   const [swipeDirection, setSwipeDirection] = useState<SwipeDirection | null>(null);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [prompt, setPrompt] = useState("");
   const [showOptions, setShowOptions] = useState(false);
+  const [showOutcome, setShowOutcome] = useState(false);
+  const [outcomeMessage, setOutcomeMessage] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
 
   // Fetch initial prompt
   useEffect(() => {
@@ -41,6 +47,37 @@ export default function AdventureScene() {
     fetchPrompt();
   }, []);
 
+  const handleOutcome = useCallback((path: 'forest' | 'plains') => {
+    // 50% chance of success
+    const success = Math.random() > 0.5;
+    setShowOptions(false);
+    setIsSuccess(success);
+    
+    if (path === 'forest') {
+      if (success) {
+        setOutcomeMessage("Wolf finds his way around the forest, moving his way in");
+      } else {
+        setOutcomeMessage("Wolf trips in the dark, losing 1 heart");
+        updateHealth(-1); // Reduce health by 1
+      }
+    } else {
+      if (success) {
+        setOutcomeMessage("Wolf finds a clear path through the endless plains");
+      } else {
+        setOutcomeMessage("Wolf gets lost in a sandstorm, losing 1 heart");
+        updateHealth(-1); // Reduce health by 1
+      }
+    }
+    
+    setShowOutcome(true);
+
+    // Wait for the outcome text to be shown, then return to tweets
+    setTimeout(() => {
+      setCurrentStage('sentiment');
+      router.push('/game/sentiment');
+    }, 3000);
+  }, [router, setCurrentStage, updateHealth]);
+
   // Swipe handling
   const minSwipeDistance = 50;
   
@@ -57,6 +94,7 @@ export default function AdventureScene() {
     if (!touchStart || !touchEnd) return;
     
     const distance = touchStart - touchEnd;
+
     const isLeftSwipe = distance > minSwipeDistance;
     const isRightSwipe = distance < -minSwipeDistance;
 
@@ -67,12 +105,30 @@ export default function AdventureScene() {
     }
   };
 
+  const handleKeyPress = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'ArrowLeft') {
+      handleSwipe('left');
+    } else if (e.key === 'ArrowRight') {
+      handleSwipe('right');
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [handleKeyPress]);
+
   const handleSwipe = (direction: SwipeDirection) => {
     if (isAnimating) return;
     
     setSwipeDirection(direction);
     setIsAnimating(true);
-    actions.handleSwipe(direction);
+
+    if (direction === 'left') {
+      handleOutcome('forest');
+    } else {
+      handleOutcome('plains');
+    }
 
     setTimeout(() => {
       setIsAnimating(false);
@@ -151,27 +207,35 @@ export default function AdventureScene() {
           <TypeWriter 
             text={prompt}
             speed={80}
-            className="text-lg mb-4 font-[var(--font-motley-forces)]"
+            className="text-lg mb-4"
             onComplete={() => setShowOptions(true)}
           />
           {showOptions && (
-            <div className="flex justify-center gap-8">
-              <div 
-                className="text-emerald-400 cursor-pointer"
-                onClick={() => handleSwipe('left')}
-              >
+            <div className="flex justify-center gap-8 animate-fade-in">
+              <div className="text-emerald-400">
                 ← Twisted Forest
               </div>
-              <div 
-                className="text-amber-400 cursor-pointer"
-                onClick={() => handleSwipe('right')}
-              >
+              <div className="text-amber-400">
                 Endless Plains →
               </div>
             </div>
           )}
         </div>
       </div>
+
+      {/* Outcome Popup */}
+      {showOutcome && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-black/90 p-8 rounded-lg border-2 border-gray-700 max-w-md text-center">
+            <div className={`text-2xl ${isSuccess ? 'text-emerald-400' : 'text-red-500'}`}>
+              {isSuccess ? '✨ Success! ' : '❌ Failed! '}
+              <span className="text-white">
+                {outcomeMessage}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Swipe Visual Feedback */}
       {swipeDirection && (
@@ -183,6 +247,17 @@ export default function AdventureScene() {
       <style jsx>{`
         .drop-shadow-glow {
           filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.5));
+        }
+        .animate-fade-in {
+          animation: fadeIn 1s;
+        }
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
         }
       `}</style>
     </div>
