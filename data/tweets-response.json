@@ -26,15 +26,15 @@
     },
     {
       "batchNumber": 0,
-      "startIndex": 0,
-      "endIndex": 3,
+      "startIndex": 4,
+      "endIndex": 7,
       "answers": [
-        "Bullish",
-        "Bearish",
-        "Bullish",
-        "Bullish"
+        "None",
+        "None",
+        "None",
+        "None"
       ],
-      "timestamp": "2025-02-11T14:37:53.844Z"
+      "timestamp": "2025-02-11T15:15:51.426Z"
     }
   ]
 }

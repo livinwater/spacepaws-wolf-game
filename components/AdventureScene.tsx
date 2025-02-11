@@ -70,12 +70,12 @@ export default function AdventureScene() {
   const getFailureMessage = (path: string) =>
     path === 'forest'
       ? "The forest's shadows deceive you. Thorns tear at your fur as you stumble through darkness."
-      : "The plains' endless expanse becomes a trap. Your paws sink into quicksand.";
+      : "The endless plains betray you. Hidden pitfalls and harsh winds drain your strength.";
 
   // Handle evaluation results
   const handleEvaluation = async (path: string) => {
     try {
-      setLoading(true); // Show loading state immediately
+      setLoading(true);
       
       const evalResponse = await fetch('/api/evaluation');
       if (!evalResponse.ok) throw new Error('Evaluation failed');
@@ -85,22 +85,30 @@ export default function AdventureScene() {
       
       // Only update state AFTER getting evaluation result
       if (latestEvaluation?.passed) {
+        setIsSuccess(true);
         setOutcomeMessage(getSuccessMessage(path));
-        updateHealth(prev => prev + 10); // Use functional update
+        updateHealth(prev => prev + 10);
       } else {
+        setIsSuccess(false);
         setOutcomeMessage(getFailureMessage(path));
-        updateHealth(prev => Math.max(0, prev - 10)); // Functional update
+        updateHealth(prev => Math.max(0, prev - 10));
       }
 
       setShowOutcome(true);
       setHasEvaluated(true);
       await saveGameState();
+
+      // Return to tweets screen after delay
+      setTimeout(() => {
+        setCurrentStage('sentiment');
+        router.push('/game/sentiment');
+      }, 3000);
       
     } catch (error) {
       console.error('Evaluation error:', error);
       setOutcomeMessage("The path shifts unexpectedly...");
     } finally {
-      setLoading(false); // Always clear loading state
+      setLoading(false);
     }
   };
 
@@ -114,7 +122,6 @@ export default function AdventureScene() {
     setIsAnimating(true);
     handleChoice(path === 'forest' ? 'left' : 'right');
     
-    // Transition to next stage after delay
     setTimeout(() => {
       setIsAnimating(false);
       setSwipeDirection(null);

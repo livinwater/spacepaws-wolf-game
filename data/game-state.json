@@ -90,6 +90,76 @@
       "heartsRemaining": 3,
       "equipment": [],
       "accuracy": 25
+    },
+    {
+      "timestamp": "2025-02-11T14:47:03.103Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 3,
+      "equipment": [],
+      "accuracy": 75
+    },
+    {
+      "timestamp": "2025-02-11T14:50:03.393Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 3,
+      "equipment": [],
+      "accuracy": 75
+    },
+    {
+      "timestamp": "2025-02-11T14:52:36.801Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 3,
+      "equipment": [],
+      "accuracy": 50
+    },
+    {
+      "timestamp": "2025-02-11T14:56:07.744Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 3,
+      "equipment": [],
+      "accuracy": 50
+    },
+    {
+      "timestamp": "2025-02-11T14:57:36.589Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 3,
+      "equipment": [],
+      "accuracy": 100
+    },
+    {
+      "timestamp": "2025-02-11T14:58:38.903Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 3,
+      "equipment": [],
+      "accuracy": 0
+    },
+    {
+      "timestamp": "2025-02-11T15:09:32.989Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 3,
+      "equipment": [],
+      "accuracy": 100
+    },
+    {
+      "timestamp": "2025-02-11T15:13:22.914Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 3,
+      "equipment": [],
+      "accuracy": 100
+    },
+    {
+      "timestamp": "2025-02-11T15:14:43.727Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 3,
+      "equipment": [],
+      "accuracy": 100
+    },
+    {
+      "timestamp": "2025-02-11T15:16:10.423Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 3,
+      "equipment": [],
+      "accuracy": 0
     }
   ]
 }
