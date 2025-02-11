@@ -38,6 +38,7 @@ export default function SentimentGame() {
   // Save batch results to file and store
   const saveBatchResults = async (results: any) => {
     try {
+      // Save to file
       const response = await fetch('/api/save-results', {
         method: 'POST',
         headers: {
@@ -52,6 +53,33 @@ export default function SentimentGame() {
         throw new Error(data.error || 'Failed to save results');
       }
 
+      // If this is batch 0, evaluate the answers
+      if (results.batchNumber === 0) {
+        const evalResponse = await fetch('/api/evaluate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            batchNumber: 0,
+            answers: results.answers
+          })
+        });
+
+        const evalData = await evalResponse.json();
+        
+        if (!evalResponse.ok) {
+          throw new Error(evalData.error || 'Failed to evaluate results');
+        }
+
+        console.log('Evaluation results:', evalData);
+        
+        // If user failed the evaluation (less than 3 correct), reduce health
+        if (!evalData.passed) {
+          useGameStore.getState().updateHealth(-1);
+        }
+      }
+
       if (data.success) {
         console.log('Results saved successfully:', results);
         // Add results to game store
@@ -62,14 +90,14 @@ export default function SentimentGame() {
         });
       }
     } catch (error) {
-      console.error('Error saving results:', error);
+      console.error('Error saving/evaluating results:', error);
     }
   };
 
   const currentTweet = tweets[currentTweetIndex];
   const isLastTweet = currentTweetIndex === tweets.length - 1;
 
-  // Check if we should show transition based on batch size
+  // Store tweet index before transition
   useEffect(() => {
     if (currentBatch.length === TWEETS_PER_INTERVAL && !showTransition) {
       // Get current number of batches from store
@@ -87,9 +115,20 @@ export default function SentimentGame() {
       console.log(`Saving batch ${batchNumber} results:`, results);
       saveBatchResults(results);
       setCurrentBatch([]); // Reset batch
+      
+      // Store current tweet index in game store
+      useGameStore.getState().setLastTweetIndex(currentTweetIndex);
       setShowTransition(true);
     }
   }, [currentBatch, currentTweetIndex, showTransition]);
+
+  // Restore tweet index on mount
+  useEffect(() => {
+    const lastIndex = useGameStore.getState().lastTweetIndex;
+    if (lastIndex > 0) {
+      setCurrentTweetIndex(lastIndex);
+    }
+  }, []);
 
   // Timer effect
   useEffect(() => {

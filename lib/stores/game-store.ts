@@ -11,6 +11,7 @@ interface GameState {
     answers: string[];
     timestamp: string;
   }[];
+  lastTweetIndex: number;
   
   // Adventure game state
   health: number;
@@ -22,8 +23,7 @@ interface GameState {
   addSentimentResults: (results: { batchNumber: number; answers: string[]; timestamp: string }) => void;
   setHealth: (health: number) => void;
   updateHealth: (delta: number) => void;
-  getSentimentResults: () => { batchNumber: number; answers: string[]; timestamp: string }[];
-  clearSentimentResults: () => void;
+  setLastTweetIndex: (index: number) => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -33,6 +33,7 @@ export const useGameStore = create<GameState>((set) => ({
   sentimentResults: [],
   health: 3,
   maxHealth: 3,
+  lastTweetIndex: 0,
   
   // Actions
   setCurrentStage: (stage) => set({ currentStage: stage }),
@@ -46,8 +47,5 @@ export const useGameStore = create<GameState>((set) => ({
     set((state) => ({
       health: Math.min(Math.max(state.health + delta, 0), state.maxHealth)
     })),
-  getSentimentResults: () => 
-    set((state) => state.sentimentResults),
-  clearSentimentResults: () => 
-    set({ sentimentResults: [] })
+  setLastTweetIndex: (index) => set({ lastTweetIndex: index })
 }));

@@ -8,21 +8,33 @@
         "Bullish",
         "Bullish",
         "Bullish",
-        "Bullish"
+        "Bearish"
       ],
-      "timestamp": "2025-02-11T09:38:45.989Z"
+      "timestamp": "2025-02-11T09:59:06.146Z"
     },
     {
       "batchNumber": 1,
+      "startIndex": 4,
+      "endIndex": 7,
+      "answers": [
+        "Bullish",
+        "Bearish",
+        "Bullish",
+        "Bullish"
+      ],
+      "timestamp": "2025-02-11T10:00:28.494Z"
+    },
+    {
+      "batchNumber": 2,
       "startIndex": 0,
       "endIndex": 3,
       "answers": [
-        "Bearish",
-        "Bearish",
-        "Bearish",
-        "Bearish"
+        "None",
+        "None",
+        "None",
+        "None"
       ],
-      "timestamp": "2025-02-11T09:38:59.417Z"
+      "timestamp": "2025-02-11T09:53:24.664Z"
     }
   ]
 }
