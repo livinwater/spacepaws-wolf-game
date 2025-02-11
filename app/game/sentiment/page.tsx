@@ -7,6 +7,7 @@ import TweetCard from '@/components/TweetCard';
 import type { Tweet, SwipeDirection } from '@/types/tweet';
 
 const TIMER_DURATION = 30;
+const TWEETS_PER_INTERVAL = 4; // Show adventure after every 4 tweets
 
 export default function SentimentGame() {
   const [tweets, setTweets] = useState<Tweet[]>([]);
@@ -15,7 +16,8 @@ export default function SentimentGame() {
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
   const [showTransition, setShowTransition] = useState(false);
   const [loading, setLoading] = useState(true);
-  
+  const [currentBatch, setCurrentBatch] = useState<string[]>([]);
+
   // Fetch tweets from API
   useEffect(() => {
     const fetchTweets = async () => {
@@ -33,8 +35,52 @@ export default function SentimentGame() {
     fetchTweets();
   }, []);
 
+  // Save batch results to file
+  const saveBatchResults = async (results: any) => {
+    try {
+      const response = await fetch('/api/save-results', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(results)
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to save results');
+      }
+
+      if (data.success) {
+        console.log('Results saved successfully:', results);
+      }
+    } catch (error) {
+      console.error('Error saving results:', error);
+    }
+  };
+
   const currentTweet = tweets[currentTweetIndex];
   const isLastTweet = currentTweetIndex === tweets.length - 1;
+
+  // Check if we should show transition based on batch size
+  useEffect(() => {
+    if (currentBatch.length === TWEETS_PER_INTERVAL && !showTransition) {
+      const batchNumber = Math.floor((currentTweetIndex - 1) / TWEETS_PER_INTERVAL);
+      const startIndex = batchNumber * TWEETS_PER_INTERVAL;
+      const results = {
+        batchNumber,
+        startIndex,
+        endIndex: startIndex + TWEETS_PER_INTERVAL - 1,
+        answers: currentBatch
+      };
+      
+      console.log(`Saving batch ${batchNumber} results:`, results);
+      saveBatchResults(results);
+      setCurrentBatch([]); // Reset batch
+      setShowTransition(true);
+    }
+  }, [currentBatch, currentTweetIndex, showTransition]);
 
   // Timer effect
   useEffect(() => {
@@ -43,37 +89,36 @@ export default function SentimentGame() {
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
         if (prevTime <= 1) {
-          if (!isLastTweet && !selectedAnswers[currentTweet.id]) {
-            handleSwipe('timeout');
-            return TIMER_DURATION;
-          }
-          return 0;
+          handleSwipe('timeout');
+          return TIMER_DURATION;
         }
         return prevTime - 1;
       });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [currentTweetIndex, currentTweet?.id, isLastTweet, selectedAnswers]);
+  }, [currentTweetIndex, currentTweet?.id]);
 
   // Reset timer when moving to next tweet
   useEffect(() => {
     setTimeLeft(TIMER_DURATION);
   }, [currentTweetIndex]);
-  
+
   const handleSwipe = (direction: SwipeDirection | 'timeout') => {
     if (!currentTweet) return;
 
+    // Save the answer
     const sentiment = direction === 'right' ? 'Bullish' : 
                      direction === 'left' ? 'Bearish' : 
-                     'Neutral';
+                     'None';
+
+    console.log(`Tweet ${currentTweetIndex + 1}: ${sentiment}`);
     
-    setSelectedAnswers(prev => ({
-      ...prev,
-      [currentTweet.id]: sentiment
-    }));
-    
-    if (!isLastTweet) {
+    // Add to current batch
+    setCurrentBatch(prev => [...prev, sentiment]);
+
+    // Always move to next tweet unless showing transition
+    if (!showTransition && !isLastTweet) {
       setCurrentTweetIndex(prev => prev + 1);
     }
   };
@@ -101,8 +146,11 @@ export default function SentimentGame() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-sky-200 via-green-50 to-green-100 p-8">
       <div className="max-w-2xl mx-auto">
-        {/* Timer Display */}
-        <div className="flex justify-end items-center mb-4">
+        {/* Progress Display */}
+        <div className="flex justify-between items-center mb-4">
+          <div className="font-[var(--font-motley-forces)] text-[#5C4B3B]">
+            Tweet {currentTweetIndex + 1} of {tweets.length} ({currentBatch.length}/4 in current batch)
+          </div>
           <div className={`font-[var(--font-motley-forces)] ${
             timeLeft <= 10 ? 'text-red-600' : 'text-[#5C4B3B]'
           }`}>
@@ -126,32 +174,33 @@ export default function SentimentGame() {
           <TweetCard
             tweet={currentTweet}
             onSwipe={handleSwipe}
-            disabled={selectedAnswers[currentTweet.id] !== undefined}
+            disabled={false}
           />
         </div>
 
         {/* Game Complete State */}
-        {(isLastTweet && Object.keys(selectedAnswers).length === tweets.length) && (
+        {isLastTweet && (
           <div className="mt-8 text-center">
             <h2 className="font-[var(--font-motley-forces)] text-2xl text-[#5C4B3B] mb-4">
-              Mini-game Complete!
+              All Tweets Complete!
             </h2>
             <p className="text-[#6B5744] mb-4">
-              Your answers have been recorded
+              Your journey is complete
             </p>
-            <button
-              onClick={() => setShowTransition(true)}
-              className="bg-[#8B7355] text-white px-6 py-3 rounded-lg font-[var(--font-motley-forces)]
-                       hover:bg-[#6B5744] transition-colors duration-200"
-            >
-              Continue Journey
-            </button>
           </div>
         )}
       </div>
 
       {showTransition && (
-        <GameTransition />
+        <GameTransition 
+          nextGame="/game/adventure" 
+          onComplete={() => {
+            setShowTransition(false);
+            if (!isLastTweet) {
+              setCurrentTweetIndex(prev => prev + 1);
+            }
+          }}
+        />
       )}
     </main>
   );

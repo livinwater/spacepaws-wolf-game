@@ -25,6 +25,12 @@ const TweetCard: React.FC<TweetCardProps> = ({
 
   // Handle swipe animation
   const handleSwipeAnimation = (direction: SwipeDirection) => {
+    console.log('🎯 TweetCard - Swipe detected:', direction);
+    if (disabled) {
+      console.log('TweetCard - Swipe ignored (disabled)');
+      return;
+    }
+
     setSwipeDirection(direction);
     const color = direction === 'right' 
       ? 'rgba(34, 197, 94, 0.4)' // Stronger green flash (40% opacity)
@@ -40,7 +46,9 @@ const TweetCard: React.FC<TweetCardProps> = ({
     });
 
     // Call the original onSwipe after animation
+    console.log('TweetCard - Starting swipe animation');
     setTimeout(() => {
+      console.log('TweetCard - Animation complete, calling onSwipe');
       onSwipe(direction);
       setSwipeDirection(null);
     }, 400);

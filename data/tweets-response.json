@@ -1,0 +1,16 @@
+{
+  "batches": [
+    {
+      "batchNumber": 0,
+      "startIndex": 0,
+      "endIndex": 3,
+      "answers": [
+        "Bullish",
+        "Bullish",
+        "Bearish",
+        "Bearish"
+      ],
+      "timestamp": "2025-02-11T06:43:10.328Z"
+    }
+  ]
+}
