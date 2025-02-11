@@ -1,33 +1,47 @@
 import { create } from 'zustand';
 
 interface GameState {
+  // Game progress
+  currentStage: 'sentiment' | 'adventure';
+  currentLevel: number;
+  
+  // Sentiment game state
+  sentimentResults: {
+    batchNumber: number;
+    answers: string[];
+    timestamp: string;
+  }[];
+  
+  // Adventure game state
   health: number;
-  currentStage: string;
-  position: 'forest' | 'plains' | null;
-  actions: {
-    setHealth: (value: number) => void;
-    setStage: (stage: string) => void;
-    setPosition: (pos: 'forest' | 'plains' | null) => void;
-    handleSwipe: (direction: 'left' | 'right') => void;
-  };
+  maxHealth: number;
+  
+  // Actions
+  setCurrentStage: (stage: 'sentiment' | 'adventure') => void;
+  setCurrentLevel: (level: number) => void;
+  addSentimentResults: (results: { batchNumber: number; answers: string[]; timestamp: string }) => void;
+  setHealth: (health: number) => void;
+  updateHealth: (delta: number) => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
-  health: 3,
-  currentStage: 'stage1',
-  position: null,
-  actions: {
-    setHealth: (value) => set({ health: value }),
-    setStage: (stage) => set({ currentStage: stage }),
-    setPosition: (pos) => set({ position: pos }),
-    handleSwipe: (direction) => {
-      set((state) => {
-        const newHealth = direction === 'left' ? state.health - 0 : state.health;
-        return {
-          position: direction === 'left' ? 'forest' : 'plains',
-          health: newHealth
-        };
-      });
-    }
-  }
+  // Initial state
+  currentStage: 'sentiment',
+  currentLevel: 1,
+  sentimentResults: [],
+  health: 100,
+  maxHealth: 100,
+  
+  // Actions
+  setCurrentStage: (stage) => set({ currentStage: stage }),
+  setCurrentLevel: (level) => set({ currentLevel: level }),
+  addSentimentResults: (results) => 
+    set((state) => ({
+      sentimentResults: [...state.sentimentResults, results]
+    })),
+  setHealth: (health) => set({ health: Math.min(health, 100) }),
+  updateHealth: (delta) => 
+    set((state) => ({
+      health: Math.min(Math.max(state.health + delta, 0), state.maxHealth)
+    }))
 }));

@@ -35,7 +35,7 @@ export default function SentimentGame() {
     fetchTweets();
   }, []);
 
-  // Save batch results to file
+  // Save batch results to file and store
   const saveBatchResults = async (results: any) => {
     try {
       const response = await fetch('/api/save-results', {
@@ -54,6 +54,12 @@ export default function SentimentGame() {
 
       if (data.success) {
         console.log('Results saved successfully:', results);
+        // Add results to game store
+        useGameStore.getState().addSentimentResults({
+          batchNumber: results.batchNumber,
+          answers: results.answers,
+          timestamp: new Date().toISOString()
+        });
       }
     } catch (error) {
       console.error('Error saving results:', error);

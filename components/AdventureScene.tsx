@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useGameStore } from '@/lib/stores/game-store';
 import { type SwipeDirection } from '@/lib/types';
 import { HeartIcon } from '@heroicons/react/24/solid';
-import TypeWriter from '@/app/components/TypeWriter';
+import TypeWriter from './TypeWriter';
 
 export default function AdventureScene() {
   const { health, currentStage, position, actions } = useGameStore();
@@ -12,7 +12,7 @@ export default function AdventureScene() {
   const [touchEnd, setTouchEnd] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [prompt, setPrompt] = useState("");
-  const [showText, setShowText] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
 
   // Fetch initial prompt
   useEffect(() => {
@@ -40,15 +40,6 @@ export default function AdventureScene() {
     
     fetchPrompt();
   }, []);
-
-  useEffect(() => {
-    // Start showing text after a brief delay
-    const timer = setTimeout(() => {
-      setShowText(true);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [prompt]);
 
   // Swipe handling
   const minSwipeDistance = 50;
@@ -157,21 +148,28 @@ export default function AdventureScene() {
 
         {/* Narrative Text */}
         <div className="text-center text-white mt-4">
-          {showText && (
-            <TypeWriter
-              text={prompt}
-              speed={100}
-              className="text-lg font-[var(--font-motley-forces)]"
-            />
+          <TypeWriter 
+            text={prompt}
+            speed={80}
+            className="text-lg mb-4 font-[var(--font-motley-forces)]"
+            onComplete={() => setShowOptions(true)}
+          />
+          {showOptions && (
+            <div className="flex justify-center gap-8">
+              <div 
+                className="text-emerald-400 cursor-pointer"
+                onClick={() => handleSwipe('left')}
+              >
+                ← Twisted Forest
+              </div>
+              <div 
+                className="text-amber-400 cursor-pointer"
+                onClick={() => handleSwipe('right')}
+              >
+                Endless Plains →
+              </div>
+            </div>
           )}
-          <div className="flex justify-center gap-8">
-            <div className="text-emerald-400">
-              ← Twisted Forest
-            </div>
-            <div className="text-amber-400">
-              Endless Plains →
-            </div>
-          </div>
         </div>
       </div>
 
