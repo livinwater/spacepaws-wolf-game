@@ -14,7 +14,10 @@ Sui - Uploading of game states to Walrus, so that players can continue from the 
 
 
 
-https://github.com/user-attachments/assets/24a611f6-6fa4-41e7-b64f-21ce119b57a0
+
+https://github.com/user-attachments/assets/6caa0a02-be72-4c7d-b2e0-96d186349742
+
+
 
 
 
