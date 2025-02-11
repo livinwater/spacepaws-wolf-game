@@ -1,0 +1,95 @@
+{
+  "gameStates": [
+    {
+      "timestamp": "2025-02-11T13:23:49.835Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 3,
+      "equipment": [],
+      "accuracy": 50
+    },
+    {
+      "timestamp": "2025-02-11T13:24:25.990Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 3,
+      "equipment": [],
+      "accuracy": 50
+    },
+    {
+      "timestamp": "2025-02-11T13:25:09.943Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 2,
+      "equipment": [],
+      "accuracy": 25
+    },
+    {
+      "timestamp": "2025-02-11T13:59:07.280Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 3,
+      "equipment": [],
+      "accuracy": 25
+    },
+    {
+      "timestamp": "2025-02-11T13:59:32.878Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 3,
+      "equipment": [],
+      "accuracy": 50
+    },
+    {
+      "timestamp": "2025-02-11T14:12:29.171Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 3,
+      "equipment": [],
+      "accuracy": 50
+    },
+    {
+      "timestamp": "2025-02-11T14:12:56.193Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 2,
+      "equipment": [],
+      "accuracy": 50
+    },
+    {
+      "timestamp": "2025-02-11T14:17:30.316Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 1,
+      "equipment": [],
+      "accuracy": 50
+    },
+    {
+      "timestamp": "2025-02-11T14:21:08.751Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 3,
+      "equipment": [],
+      "accuracy": 100
+    },
+    {
+      "timestamp": "2025-02-11T14:21:47.714Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 3,
+      "equipment": [],
+      "accuracy": 50
+    },
+    {
+      "timestamp": "2025-02-11T14:34:44.311Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 3,
+      "equipment": [],
+      "accuracy": 50
+    },
+    {
+      "timestamp": "2025-02-11T14:36:07.495Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 2,
+      "equipment": [],
+      "accuracy": 0
+    },
+    {
+      "timestamp": "2025-02-11T14:38:08.757Z",
+      "tweetsAnswered": 4,
+      "heartsRemaining": 3,
+      "equipment": [],
+      "accuracy": 25
+    }
+  ]
+}

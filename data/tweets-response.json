@@ -1,40 +1,40 @@
 {
   "batches": [
     {
-      "batchNumber": 0,
-      "startIndex": 0,
-      "endIndex": 3,
-      "answers": [
-        "Bullish",
-        "Bullish",
-        "Bullish",
-        "Bearish"
-      ],
-      "timestamp": "2025-02-11T09:59:06.146Z"
-    },
-    {
-      "batchNumber": 1,
-      "startIndex": 4,
-      "endIndex": 7,
-      "answers": [
-        "Bullish",
-        "Bearish",
-        "Bullish",
-        "Bullish"
-      ],
-      "timestamp": "2025-02-11T10:00:28.494Z"
-    },
-    {
       "batchNumber": 2,
-      "startIndex": 0,
-      "endIndex": 3,
+      "startIndex": 8,
+      "endIndex": 11,
       "answers": [
         "None",
         "None",
         "None",
         "None"
       ],
-      "timestamp": "2025-02-11T09:53:24.664Z"
+      "timestamp": "2025-02-11T11:22:09.325Z"
+    },
+    {
+      "batchNumber": 1,
+      "startIndex": 4,
+      "endIndex": 7,
+      "answers": [
+        "None",
+        "None",
+        "None",
+        "None"
+      ],
+      "timestamp": "2025-02-11T11:43:52.221Z"
+    },
+    {
+      "batchNumber": 0,
+      "startIndex": 0,
+      "endIndex": 3,
+      "answers": [
+        "Bullish",
+        "Bearish",
+        "Bullish",
+        "Bullish"
+      ],
+      "timestamp": "2025-02-11T14:37:53.844Z"
     }
   ]
 }

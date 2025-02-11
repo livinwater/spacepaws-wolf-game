@@ -9,74 +9,117 @@ import TypeWriter from './TypeWriter';
 
 export default function AdventureScene() {
   const router = useRouter();
-  const { health, updateHealth, setCurrentStage } = useGameStore();
+  const { health, updateHealth, setCurrentStage, adventuresCompleted, questsCompleted, currentStreak } = useGameStore();
   const [swipeDirection, setSwipeDirection] = useState<SwipeDirection | null>(null);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [prompt, setPrompt] = useState("");
+  const [prompt, setPrompt] = useState("The wolf stirs, his paws scraping against jagged obsidian rock. The air hums with unfamiliar energies. Before him stretches a choice: the twisted forest or the endless plains.");
   const [showOptions, setShowOptions] = useState(false);
   const [showOutcome, setShowOutcome] = useState(false);
   const [outcomeMessage, setOutcomeMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
+  const [hasEvaluated, setHasEvaluated] = useState(false);
+  const [questStartTime, setQuestStartTime] = useState(Date.now());
+  const [loading, setLoading] = useState(false);
 
-  // Fetch initial prompt
-  useEffect(() => {
-    async function fetchPrompt() {
-      try {
-        const response = await fetch('/api/walrus/to_walrus', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            messages: [{
-              role: "user",
-              content: "Generate stage1 prompt"
-            }]
-          })
-        });
-        
-        const data = await response.json();
-        setPrompt(data.prompt || data.fallback);
-      } catch (error) {
-        setPrompt("The wolf stirs, his paws scraping against jagged obsidian rock. The air hums with unfamiliar energies. Before him stretches a choice: the twisted forest or the endless plains.");
-      }
-    }
+  // Save game state to Walrus and locally
+  async function saveGameState() {
+    if (!hasEvaluated) return;
     
-    fetchPrompt();
-  }, []);
+    try {
+      // Fetch evaluation results from API
+      const evalResponse = await fetch('/api/evaluation');
+      if (!evalResponse.ok) {
+        throw new Error('Failed to fetch evaluation results');
+      }
+      
+      const evaluationData = await evalResponse.json();
+      const latestEvaluation = evaluationData.evaluations[evaluationData.evaluations.length - 1];
+      
+      // Save evaluation results and trigger game state saving
+      const response = await fetch('/api/save-results', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          results: latestEvaluation.results,
+          totalCorrect: latestEvaluation.totalCorrect,
+          passed: latestEvaluation.passed,
+          health: health
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save game state');
+      }
+      
+      console.log('Game state saved successfully');
+    } catch (error) {
+      console.error('Error handling game state:', error);
+    }
+  }
+
+  // Helper functions for messages
+  const getSuccessMessage = (path: string) => 
+    path === 'forest'
+      ? "The twisted branches part before you, revealing a hidden path. Your instincts were right."
+      : "The endless plains yield their secrets. A glimmer of hope appears on the horizon.";
+
+  const getFailureMessage = (path: string) =>
+    path === 'forest'
+      ? "The forest's shadows deceive you. Thorns tear at your fur as you stumble through darkness."
+      : "The plains' endless expanse becomes a trap. Your paws sink into quicksand.";
+
+  // Handle evaluation results
+  const handleEvaluation = async (path: string) => {
+    try {
+      setLoading(true); // Show loading state immediately
+      
+      const evalResponse = await fetch('/api/evaluation');
+      if (!evalResponse.ok) throw new Error('Evaluation failed');
+      
+      const evaluationData = await evalResponse.json();
+      const latestEvaluation = evaluationData.evaluations.at(-1);
+      
+      // Only update state AFTER getting evaluation result
+      if (latestEvaluation?.passed) {
+        setOutcomeMessage(getSuccessMessage(path));
+        updateHealth(prev => prev + 10); // Use functional update
+      } else {
+        setOutcomeMessage(getFailureMessage(path));
+        updateHealth(prev => Math.max(0, prev - 10)); // Functional update
+      }
+
+      setShowOutcome(true);
+      setHasEvaluated(true);
+      await saveGameState();
+      
+    } catch (error) {
+      console.error('Evaluation error:', error);
+      setOutcomeMessage("The path shifts unexpectedly...");
+    } finally {
+      setLoading(false); // Always clear loading state
+    }
+  };
+
+  const handleChoice = async (direction: SwipeDirection) => {
+    const path = direction === 'right' ? 'plains' : 'forest';
+    await handleEvaluation(path);
+  };
 
   const handleOutcome = useCallback((path: 'forest' | 'plains') => {
-    // 50% chance of success
-    const success = Math.random() > 0.5;
-    setShowOptions(false);
-    setIsSuccess(success);
+    if (loading) return;
+    setIsAnimating(true);
+    handleChoice(path === 'forest' ? 'left' : 'right');
     
-    if (path === 'forest') {
-      if (success) {
-        setOutcomeMessage("Wolf finds his way around the forest, moving his way in");
-      } else {
-        setOutcomeMessage("Wolf trips in the dark, losing 1 heart");
-        updateHealth(-1); // Reduce health by 1
-      }
-    } else {
-      if (success) {
-        setOutcomeMessage("Wolf finds a clear path through the endless plains");
-      } else {
-        setOutcomeMessage("Wolf gets lost in a sandstorm, losing 1 heart");
-        updateHealth(-1); // Reduce health by 1
-      }
-    }
-    
-    setShowOutcome(true);
-
-    // Wait for the outcome text to be shown, then return to tweets
+    // Transition to next stage after delay
     setTimeout(() => {
-      setCurrentStage('sentiment');
-      router.push('/game/sentiment');
-    }, 3000);
-  }, [router, setCurrentStage, updateHealth]);
+      setIsAnimating(false);
+      setSwipeDirection(null);
+    }, 1000);
+  }, [loading]);
 
   // Swipe handling
   const minSwipeDistance = 50;
@@ -99,17 +142,17 @@ export default function AdventureScene() {
     const isRightSwipe = distance < -minSwipeDistance;
 
     if (isLeftSwipe) {
-      handleSwipe('left');
+      handleOutcome('forest');
     } else if (isRightSwipe) {
-      handleSwipe('right');
+      handleOutcome('plains');
     }
   };
 
   const handleKeyPress = useCallback((e: KeyboardEvent) => {
     if (e.key === 'ArrowLeft') {
-      handleSwipe('left');
+      handleOutcome('forest');
     } else if (e.key === 'ArrowRight') {
-      handleSwipe('right');
+      handleOutcome('plains');
     }
   }, []);
 
@@ -119,7 +162,7 @@ export default function AdventureScene() {
   }, [handleKeyPress]);
 
   const handleSwipe = (direction: SwipeDirection) => {
-    if (isAnimating) return;
+    if (isAnimating || loading) return;
     
     setSwipeDirection(direction);
     setIsAnimating(true);

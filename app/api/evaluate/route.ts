@@ -22,6 +22,11 @@ async function saveEvaluationResults(evaluation: any) {
     evalData = { evaluations: [] };
   }
 
+  // Remove any existing evaluations with the same batch number
+  evalData.evaluations = evalData.evaluations.filter(
+    (e: any) => e.batchNumber !== evaluation.batchNumber
+  );
+
   // Add new evaluation with timestamp
   evalData.evaluations.push({
     ...evaluation,
@@ -84,6 +89,13 @@ export async function POST(req: Request) {
     const tweets = await getTweets();
     const batchTweets = tweets.slice(batchNumber * 4, (batchNumber + 1) * 4);
 
+    console.log('Latest batch:', batchTweets);
+
+    if (!batchTweets || batchTweets.length !== 4) {
+      console.error('Batch not found:', batchNumber);
+      return NextResponse.json({ success: false, error: 'Batch not found' });
+    }
+
     // Analyze each tweet and compare with user answers
     const results = await Promise.all(batchTweets.map(async (tweet, index) => {
       const llmSentiment = await analyzeSentiment(tweet.content);
@@ -96,6 +108,13 @@ export async function POST(req: Request) {
         correct: userAnswer === llmSentiment ? 1 : 0
       };
     }));
+
+    console.log('Evaluation results:', {
+      batchNumber,
+      results,
+      totalCorrect: results.reduce((sum, result) => sum + result.correct, 0),
+      passed: results.reduce((sum, result) => sum + result.correct, 0) >= 3
+    });
 
     // Calculate total correct answers
     const totalCorrect = results.reduce((sum, result) => sum + result.correct, 0);
@@ -110,6 +129,7 @@ export async function POST(req: Request) {
 
     // Save evaluation results
     await saveEvaluationResults(evaluation);
+    console.log('Saved evaluation results');
 
     return NextResponse.json({
       success: true,

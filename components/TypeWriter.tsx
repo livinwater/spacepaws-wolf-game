@@ -9,11 +9,19 @@ interface TypeWriterProps {
   onComplete?: () => void;
 }
 
-export default function TypeWriter({ text, speed = 50, className = '', onComplete }: TypeWriterProps) {
+export default function TypeWriter({ text = '', speed = 50, className = '', onComplete }: TypeWriterProps) {
   const [displayText, setDisplayText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+    // Reset state when text changes
+    setDisplayText('');
+    setCurrentIndex(0);
+  }, [text]);
+
+  useEffect(() => {
+    if (!text) return;
+
     if (currentIndex < text.length) {
       const timer = setTimeout(() => {
         setDisplayText(prev => prev + text[currentIndex]);

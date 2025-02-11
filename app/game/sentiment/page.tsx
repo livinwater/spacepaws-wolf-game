@@ -35,62 +35,83 @@ export default function SentimentGame() {
     fetchTweets();
   }, []);
 
-  // Save batch results to file and store
-  const saveBatchResults = async (results: any) => {
+  // Save batch results and trigger evaluation
+  async function saveBatchResults(batchNumber: number, startIndex: number, endIndex: number, answers: string[]) {
     try {
-      // Save to file
+      const { health } = useGameStore.getState(); // Get current health from store
+      console.log('Saving batch', batchNumber, 'results:', { batchNumber, startIndex, endIndex, answers });
+      
+      // Save tweets response first
       const response = await fetch('/api/save-results', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(results)
+        body: JSON.stringify({
+          batchNumber,
+          startIndex,
+          endIndex,
+          answers,
+          health
+        })
       });
 
       const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to save results');
-      }
-
-      // If this is batch 0, evaluate the answers
-      if (results.batchNumber === 0) {
-        const evalResponse = await fetch('/api/evaluate', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            batchNumber: 0,
-            answers: results.answers
-          })
-        });
-
-        const evalData = await evalResponse.json();
-        
-        if (!evalResponse.ok) {
-          throw new Error(evalData.error || 'Failed to evaluate results');
-        }
-
-        console.log('Evaluation results:', evalData);
-        
-        // If user failed the evaluation (less than 3 correct), reduce health
-        if (!evalData.passed) {
-          useGameStore.getState().updateHealth(-1);
-        }
-      }
-
       if (data.success) {
-        console.log('Results saved successfully:', results);
-        // Add results to game store
-        useGameStore.getState().addSentimentResults({
-          batchNumber: results.batchNumber,
-          answers: results.answers,
-          timestamp: new Date().toISOString()
-        });
+        console.log('Results saved successfully:', { batchNumber, startIndex, endIndex, answers });
+        
+        // If this is batch 0, trigger evaluation
+        if (batchNumber === 0) {
+          const evalResponse = await fetch('/api/evaluate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              batchNumber: 0,
+              answers
+            })
+          });
+
+          const evalData = await evalResponse.json();
+          console.log('Evaluation results:', evalData);
+
+          if (evalData.success) {
+            // Update game state after evaluation
+            try {
+              const health = useGameStore.getState().health;
+              console.log('Updating game state after evaluation with health:', health);
+              const gameStateResponse = await fetch('/api/game-state', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  health
+                })
+              });
+
+              if (!gameStateResponse.ok) {
+                console.error('Failed to update game state:', await gameStateResponse.text());
+              } else {
+                const gameStateData = await gameStateResponse.json();
+                console.log('Game state updated successfully:', gameStateData);
+              }
+            } catch (error) {
+              console.error('Error updating game state:', error);
+            }
+
+            // Update health if evaluation failed
+            if (!evalData.passed) {
+              useGameStore.getState().updateHealth(-1);
+            }
+          }
+        }
+      } else {
+        console.error('Failed to save results:', data.error);
       }
     } catch (error) {
-      console.error('Error saving/evaluating results:', error);
+      console.error('Error saving results:', error);
     }
   };
 
@@ -113,7 +134,7 @@ export default function SentimentGame() {
       };
       
       console.log(`Saving batch ${batchNumber} results:`, results);
-      saveBatchResults(results);
+      saveBatchResults(batchNumber, startIndex, startIndex + TWEETS_PER_INTERVAL - 1, currentBatch);
       setCurrentBatch([]); // Reset batch
       
       // Store current tweet index in game store

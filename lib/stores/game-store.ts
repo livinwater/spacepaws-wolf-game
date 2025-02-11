@@ -4,6 +4,10 @@ interface GameState {
   // Game progress
   currentStage: 'sentiment' | 'adventure';
   currentLevel: number;
+  adventuresCompleted: number;
+  tweetsReplied: number;
+  lastQuestName: string;
+  walletAddress: string;
   
   // Sentiment game state
   sentimentResults: {
@@ -24,6 +28,10 @@ interface GameState {
   setHealth: (health: number) => void;
   updateHealth: (delta: number) => void;
   setLastTweetIndex: (index: number) => void;
+  incrementAdventures: () => void;
+  incrementTweetsReplied: (count: number) => void;
+  setLastQuestName: (name: string) => void;
+  setWalletAddress: (address: string) => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -34,6 +42,10 @@ export const useGameStore = create<GameState>((set) => ({
   health: 3,
   maxHealth: 3,
   lastTweetIndex: 0,
+  adventuresCompleted: 0,
+  tweetsReplied: 0,
+  lastQuestName: '',
+  walletAddress: '',
   
   // Actions
   setCurrentStage: (stage) => set({ currentStage: stage }),
@@ -47,5 +59,15 @@ export const useGameStore = create<GameState>((set) => ({
     set((state) => ({
       health: Math.min(Math.max(state.health + delta, 0), state.maxHealth)
     })),
-  setLastTweetIndex: (index) => set({ lastTweetIndex: index })
+  setLastTweetIndex: (index) => set({ lastTweetIndex: index }),
+  incrementAdventures: () => 
+    set((state) => ({
+      adventuresCompleted: state.adventuresCompleted + 1
+    })),
+  incrementTweetsReplied: (count) => 
+    set((state) => ({
+      tweetsReplied: state.tweetsReplied + count
+    })),
+  setLastQuestName: (name) => set({ lastQuestName: name }),
+  setWalletAddress: (address) => set({ walletAddress: address })
 }));
